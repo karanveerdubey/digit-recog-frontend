@@ -3,7 +3,6 @@
   --text: #e9eef5;
   --muted: #9fb0c7;
   --accent: #4fb3ff;
-  --accent-2: #9dff8f;
 }
 
 * { box-sizing: border-box; }
@@ -32,7 +31,6 @@ h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: 0.4px; }
 .note { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
 
 .canvas-wrap {
-  position: relative; /* for overlay positioning */
   display: grid;
   place-items: center;
   margin: 22px 0 14px;
@@ -44,60 +42,5 @@ h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: 0.4px; }
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.15);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03),
-              0 6px 24px rgba(0,0,0,0.25);
-  touch-action: none; /* allow touch drawing */
-}
-
-/* Stars overlay (remove this block if omitting stars) */
-#stars-container {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 360px; height: 360px;
-  pointer-events: none;
-}
-.star {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2));
-  transform: translate(-50%, -50%) scale(0.9);
-  animation: fly 0.9s ease forwards;
-  filter: drop-shadow(0 0 6px rgba(79,179,255,0.65));
-}
-@keyframes fly {
-  to {
-    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.2);
-    opacity: 0;
-  }
-}
-
-.controls {
-  display: flex; gap: 10px; justify-content: center; margin: 8px 0 16px;
-}
-button {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-  color: var(--text);
-  cursor: pointer;
-  font-weight: 600;
-  transition: transform .04s ease, background .2s ease, border-color .2s ease;
-}
-button:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.22); }
-button:active { transform: translateY(0); }
-button.secondary { background: rgba(255,255,255,0.04); }
-
-#prediction-result {
-  text-align: center;
-  font-size: 18px;
-  color: var(--accent);
-  min-height: 28px;
-}
-
-@media (max-width: 420px) {
-  #handwriting-canvas, #stars-container { width: 300px; height: 300px; }
+              0 6px 24px rgba(0,0,0,0.1);
 }

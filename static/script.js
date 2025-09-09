@@ -5,7 +5,6 @@ const submitBtn= document.getElementById('submit-button');
 const clearBtn = document.getElementById('clear-button');
 const undoBtn  = document.getElementById('undo-button');
 const outEl    = document.getElementById('prediction-result');
-const starsEl  = document.getElementById('stars-container');
 
 let drawing = false;
 let history = [];
@@ -88,27 +87,6 @@ undoBtn.onclick = () => {
   img.src = prev;
 };
 
-// Star burst (remove this whole function and its call if you want to omit stars)
-function burst() {
-  if (!starsEl) return;
-  starsEl.innerHTML = '';
-  // size overlay to canvas
-  starsEl.style.width  = canvas.width + 'px';
-  starsEl.style.height = canvas.height + 'px';
-
-  const n = 20;
-  for (let i = 0; i < n; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const tx = (Math.random() * 2 - 1) * (canvas.width  * 0.45);
-    const ty = (Math.random() * 2 - 1) * (canvas.height * 0.45);
-    s.style.setProperty('--tx', `${tx}px`);
-    s.style.setProperty('--ty', `${ty}px`);
-    starsEl.appendChild(s);
-  }
-  setTimeout(() => (starsEl.innerHTML = ''), 900);
-}
-
 // Predict
 submitBtn.onclick = async () => {
   try {
@@ -121,7 +99,6 @@ submitBtn.onclick = async () => {
       body: JSON.stringify({ image: dataUrl })
     });
 
-    // If the server failed CORS or crashed, this may throw
     const json = await res.json().catch(() => ({}));
 
     if (!res.ok) {
@@ -131,7 +108,6 @@ submitBtn.onclick = async () => {
 
     if (typeof json.prediction === 'number') {
       outEl.textContent = `Prediction: ${json.prediction}`;
-      burst(); // remove this call if you want to omit stars
     } else {
       outEl.textContent = `Error: ${json.error || 'invalid response'}`;
     }
