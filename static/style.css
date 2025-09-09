@@ -21,10 +21,18 @@ html, body {
   max-width: 860px;
   margin: 48px auto;
   padding: 24px;
-  border: none;              /* ← remove the line */
+
+  border: 0;
   border-radius: 24px;
-  overflow: hidden;          /* avoids any antialias seam on rounded edges */
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+
+  /* Constant fill instead of gradient to avoid the seam */
+  background: rgba(255,255,255,0.025);
+
+  /* Ensure the background doesn’t bleed past rounded edges */
+  background-clip: padding-box;
+  overflow: hidden;
+
+  /* Soft shadow only (no borders) */
   box-shadow: 0 18px 60px rgba(0,0,0,0.40);
 }
 
