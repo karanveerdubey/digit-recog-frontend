@@ -1,17 +1,17 @@
-// ----- Canvas setup -----
-const canvas = document.getElementById('handwriting-canvas');
-const ctx = canvas.getContext('2d');
-const submitBtn = document.getElementById('submit-button');
-const undoBtn   = document.getElementById('undo-button');
-const clearBtn  = document.getElementById('clear-button');
-const outEl     = document.getElementById('prediction-result');
-const starsEl   = document.getElementById('stars-container');
+// Elements
+const canvas   = document.getElementById('handwriting-canvas');
+const ctx      = canvas.getContext('2d');
+const submitBtn= document.getElementById('submit-button');
+const clearBtn = document.getElementById('clear-button');
+const undoBtn  = document.getElementById('undo-button');
+const outEl    = document.getElementById('prediction-result');
+const starsEl  = document.getElementById('stars-container');
 
 let drawing = false;
-let history = [];   // dataURL history for undo
+let history = [];
 const MAX_HISTORY = 10;
 
-// white background so PNG alpha doesn't break preprocessing
+// Initialize canvas with white background
 function resetCanvas() {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -21,17 +21,17 @@ function saveState() {
   if (history.length > MAX_HISTORY) history.shift();
 }
 
-// initial paint + first snapshot
+// Init
 resetCanvas();
 saveState();
 
-// drawing style
+// Pen style
 ctx.lineWidth = 18;
 ctx.lineJoin = 'round';
 ctx.lineCap  = 'round';
 ctx.strokeStyle = '#000000';
 
-// ----- Pointer events (mouse + touch) -----
+// Pointer utils
 function getPos(evt) {
   const rect = canvas.getBoundingClientRect();
   const e = evt.touches ? evt.touches[0] : evt;
@@ -57,16 +57,18 @@ function endDraw() {
   saveState();
 }
 
+// Mouse
 canvas.addEventListener('mousedown', startDraw);
 canvas.addEventListener('mousemove', moveDraw);
 canvas.addEventListener('mouseup', endDraw);
 canvas.addEventListener('mouseleave', endDraw);
 
+// Touch
 canvas.addEventListener('touchstart', startDraw, { passive: false });
 canvas.addEventListener('touchmove', moveDraw, { passive: false });
 canvas.addEventListener('touchend', endDraw);
 
-// ----- Buttons -----
+// Buttons
 clearBtn.onclick = () => {
   resetCanvas();
   saveState();
@@ -74,8 +76,8 @@ clearBtn.onclick = () => {
 };
 
 undoBtn.onclick = () => {
-  if (history.length <= 1) return;         // keep at least one state
-  history.pop();                            // discard current
+  if (history.length <= 1) return;
+  history.pop();
   const prev = history[history.length - 1];
   const img = new Image();
   img.onload = () => {
@@ -86,25 +88,32 @@ undoBtn.onclick = () => {
   img.src = prev;
 };
 
-// simple celebratory star burst
+// Star burst (remove this whole function and its call if you want to omit stars)
 function burst() {
+  if (!starsEl) return;
   starsEl.innerHTML = '';
-  const n = 18;
+  // size overlay to canvas
+  starsEl.style.width  = canvas.width + 'px';
+  starsEl.style.height = canvas.height + 'px';
+
+  const n = 20;
   for (let i = 0; i < n; i++) {
     const s = document.createElement('div');
     s.className = 'star';
-    s.style.setProperty('--tx', (Math.random() * 2 - 1) * 140 + 'px');
-    s.style.setProperty('--ty', (Math.random() * 2 - 1) * 140 + 'px');
+    const tx = (Math.random() * 2 - 1) * (canvas.width  * 0.45);
+    const ty = (Math.random() * 2 - 1) * (canvas.height * 0.45);
+    s.style.setProperty('--tx', `${tx}px`);
+    s.style.setProperty('--ty', `${ty}px`);
     starsEl.appendChild(s);
   }
-  setTimeout(() => starsEl.innerHTML = '', 900);
+  setTimeout(() => (starsEl.innerHTML = ''), 900);
 }
 
-// ----- Predict -----
+// Predict
 submitBtn.onclick = async () => {
   try {
     outEl.textContent = 'Predicting…';
-    const dataUrl = canvas.toDataURL('image/png'); // "data:image/png;base64,...."
+    const dataUrl = canvas.toDataURL('image/png');
 
     const res = await fetch(`${window.API_BASE}/predict`, {
       method: 'POST',
@@ -112,16 +121,17 @@ submitBtn.onclick = async () => {
       body: JSON.stringify({ image: dataUrl })
     });
 
+    // If the server failed CORS or crashed, this may throw
     const json = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      outEl.textContent = `Error: ${json.error || 'request failed'}`;
+      outEl.textContent = `Error: ${json.error || res.statusText || 'request failed'}`;
       return;
     }
 
     if (typeof json.prediction === 'number') {
       outEl.textContent = `Prediction: ${json.prediction}`;
-      burst();
+      burst(); // remove this call if you want to omit stars
     } else {
       outEl.textContent = `Error: ${json.error || 'invalid response'}`;
     }
