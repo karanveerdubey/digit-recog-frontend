@@ -25,15 +25,14 @@ html, body {
   border: 0;
   border-radius: 24px;
 
-  /* Constant fill instead of gradient to avoid the seam */
-  background: rgba(255,255,255,0.025);
+  /* solid (non-transparent) fill avoids edge artifacts */
+  background: #0e1624;          /* page bg */
 
-  /* Ensure the background doesn’t bleed past rounded edges */
-  background-clip: padding-box;
-  overflow: hidden;
+  
+  box-shadow: none;
 
-  /* Soft shadow only (no borders) */
-  box-shadow: 0 18px 60px rgba(0,0,0,0.40);
+ 
+  overflow: visible;
 }
 
 header { text-align: center; margin-bottom: 18px; }
