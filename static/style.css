@@ -3,6 +3,8 @@
   --text: #e9eef5;
   --muted: #9fb0c7;
   --accent: #4fb3ff;
+  --border: rgba(255,255,255,0.14);
+  --border-hover: rgba(255,255,255,0.24);
 }
 
 * { box-sizing: border-box; }
@@ -42,5 +44,55 @@ h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: 0.4px; }
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.15);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03),
-              0 6px 24px rgba(0,0,0,0.1);
+              0 6px 24px rgba(0,0,0,0.25);
+  touch-action: none; /* allow touch drawing */
+}
+
+/* Controls bar */
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 16px;
+}
+
+/* Cross-browser reset + custom style */
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+
+  transition: transform .06s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+button:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+button.secondary { background: rgba(255,255,255,0.05); box-shadow: none; }
+
+#prediction-result {
+  text-align: center;
+  font-size: 18px;
+  color: var(--accent);
+  min-height: 28px;
+}
+
+@media (max-width: 420px) {
+  #handwriting-canvas { width: 300px; height: 300px; }
 }
