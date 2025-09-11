@@ -148,7 +148,7 @@ function renderResult(json) {
     const confPct = json.confidence != null ? ` (${(json.confidence*100).toFixed(1)}%)` : '';
     let line = `Prediction: ${json.prediction}${confPct}`;
     if (Array.isArray(json.top) && json.top.length > 1) {
-      const alts = json.top.slice(1).map(t => `${t.digit} ${(t.p*100).toFixed(0)}%`).join('  ·  ');
+      const alts = json.top.slice(1).map(t => `${t.digit} (${(t.p*100).toFixed(0)}%)`).join('  ·  ');
       if (alts) line += `\nAlternates: ${alts}`;
     }
     outEl.textContent = line;
